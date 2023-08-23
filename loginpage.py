@@ -1,0 +1,120 @@
+from tkinter import *
+from PIL import ImageTk,Image
+from tkinter import messagebox
+import pymysql
+win=Tk()
+img=ImageTk.PhotoImage(Image.open("C:\\Users\\91720\\Desktop\\B.jpg"))
+lable=Label(image=img)
+lable.pack()
+
+def Login():
+	username=uid.get()
+	password=pwd.get()
+	print(username,"",password)
+	conobj=pymysql.connect(host="localhost",user="root",password="",port=3306)
+	curobj=conobj.cursor()
+	curobj.execute('use BCA2021AB;')
+	test=f'select * from INFO where userid ="{username}" and password = "{password}";'
+	curobj.execute(test)
+	record=curobj.fetchall()
+	if len (record) :
+		messagebox.showinfo ("Logininfo","welcome to home page")
+		win.destroy()
+		import mcq
+		mcq.myQuiz()
+	else:
+		messagebox.showinfo("Logininfo","sorry try again")
+	
+def Reset():
+	uid.delete(0,END)
+	pwd.delete(0,END)
+def newUser():
+	#conobj=pymysql.connect(host="localhost",user="root",password="",port=3306)
+	#curobj=conobj.cursor()
+	#curobj.execute('create database BCA2021AB;')
+	#curobj.execute('use BCA2021AB;')
+	#curobj.execute('create table INFO (userid varchar(20),phno bigint(10),dept varchar(20),gender varchar(6),password varchar(10));')
+	#curobj.close()
+	#conobj.close()
+	win.destroy()
+	win1=Tk()
+	img1=ImageTk.PhotoImage(Image.open("C:\\Users\\91720\\Desktop\\B.jpg"))
+	lable1=Label(image=img1)
+	lable1.pack()
+
+	#win1=Tk()
+	def submit():
+		a=nuid.get()
+		b=nphno.get()
+		c=menu.get()
+		d=var1.get()
+		e=npwd.get()
+		#print(a,"",b"",c,"",d,"",e)
+		conobj=pymysql.connect(host="localhost",user="root",password="",port=3306)
+		curobj=conobj.cursor()
+		#curobj.execute('create database BCA2021AB;')
+		curobj.execute('use BCA2021AB;')
+		#curobj.execute('create table INFO (userid varchar(20),phno bigint(10),dept varchar(20),gender varchar(6),password varchar(10));')
+		r='insert into INFO values("{userid}","{phno}","{dept}","{gender}","{password}");'
+		r1=r.format(userid=a,phno=b,dept=c,gender=d,password=e)
+		#print(r1)
+		curobj.execute(r1)
+		conobj.commit()
+		curobj.close()
+		conobj.close()
+		win1.destroy()
+	def reset():
+		nuid.delete(0,END)
+		nphno.delete(0,END)
+		menu.set(None)
+		#var1.delete(0,END)
+		var1.set(None)
+		npwd.delete(0,END)
+	win1.title("SignUp Page")
+	win1.maxsize(700,800)
+	win1.minsize(700,800)
+	Label(win1,text="PLEASE SignUp HERE",font=('Bernard MT',20),fg="white",bg="#BC8BC2",relief=RAISED,width=30).place(x=150,y=50)
+	Label(win1,text="Set UserID:",font=('Bernard MT',15),fg="white",bg="#BCCADB",relief=RAISED,width=20).place(x=150,y=200)
+	nuid=Entry(win1,font=('Bernard MT',15),fg="black",bg="white")
+	nuid.place(x=400,y=200)
+	Label(win1,text="Enter Your Number:",font=('Bernard MT',15),fg="white",bg="#BCCADB",relief=RAISED,width=20).place(x=150,y=300)
+	nphno=Entry(win1,font=('Bernard MT',15),fg="black",bg="white")
+	nphno.place(x=400,y=300)
+	Label(win1,text="Enter Dept:",font=('Bernard MT',15),fg="white",bg="#BCCADB",relief=RAISED,width=20).place(x=150,y=400)
+	#pwd=Entry(win1,font=('Bernard MT',15),fg="black",bg="white")
+	menu = StringVar()
+	drop = OptionMenu(win1,menu,"BCA","Bsc.ITM","Bsc.CS")
+	drop.place(x=400,y=400)
+	Label(win1,text="Select Gender:",font=('Bernard MT',15),bg="#BCCADB",fg="white",relief=RAISED,width=20).place(x=150,y=500)
+	#pwd.place(x=350,y=500)
+	var1=StringVar(win1,None)
+	Radiobutton(win1,text="male",variable = var1,value="M").place(x=400,y=500)
+	Radiobutton(win1,text="female",variable = var1,value="f").place(x=500,y=500)
+
+	Label(win1,text="Enter PassWord:",font=('Bernard MT',15),bg="#BCCADB",fg="white",relief=RAISED,width=20).place(x=150,y=600)
+	npwd=Entry(win1,font=('Bernard MT',15),fg="black",bg="white")
+	npwd.place(x=400,y=600)
+	Button(win1,text="Submit",font=("Bernard MT",15),bg = "#BC8BC2" ,fg="white",command=submit).place(x=400,y=650)
+	Button(win1,text="Reset",font=("Bernard MT",15),bg = "#BC8BC2" ,fg="white",command=reset).place(x=500,y=650)
+	win1.mainloop()
+def Exit():	
+	win.destroy()
+win.title("Home Page")
+win.maxsize(700,700)
+win.minsize(700,700)
+Label(win,text="PLEASE LOGIN HERE",font=('Bernard MT',20),fg="white",bg="#BCCADB",relief=RAISED,width=30,height=1).place(x=150,y=50)
+
+Label(win,text="Enter User ID:",font=('verdana',15),fg="white",bg="#6F7680",relief=RAISED,width=20).place(x=150,y=150)
+uid=Entry(win,font=('Bernard MT',15),bg="white",fg="black")
+uid.place(x=420,y=150)
+pwd=Entry(win,font=('Bernard MT',15),bg="white",fg="black",show="*")
+pwd.place(x=420,y=250)
+Label(win,text="Enter PassWord:",font=('verdana',15),fg="white",bg="#6F7680",relief=RAISED,width=20).place(x=150,y=250)
+
+Button(win,text="Login",font=('verdana',15),fg="white",bg="#BCCADB",command=Login).place(x=200,y=400)
+Button(win,text="Reset",font=('verdana',15),fg="white",bg="#BCCADB",command=Reset).place(x=400,y=400)
+Button(win,text="Sign Up",font=('verdana',15),fg="white",bg="#BCCADB",command=newUser).place(x=200,y=500)
+Button(win,text="Exit",font=('verdana',15),fg="white",bg="#BCCADB",command=Exit).place(x=400,y=500)
+
+
+win.mainloop()
